@@ -118,13 +118,23 @@ bot = MyBot()
 
 # Slash command to post control buttons
 @bot.tree.command(name="postcontrols", description="Post the control buttons in the current channel")
-async def post_controls(interaction: discord.Interaction):
-	"""Slash command to post the control buttons in the current channel."""
-	log_message(f"Received /postcontrols command from user {interaction.user.display_name} in channel {interaction.channel.name}", category="post_controls")
-	await post_controls_helper(interaction.channel)
-	await interaction.response.send_message("Control buttons posted successfully.", ephemeral=True)
-	log_message("Control buttons posted successfully.", category="post_controls")
 
+async def post_controls(interaction: discord.Interaction):
+    """Slash command to post the control buttons in the current channel."""
+    log_message(
+        f"Received /postcontrols command from user {interaction.user.display_name} in channel {interaction.channel.name}",
+        category="post_controls"
+    )
+
+    await interaction.response.defer(ephemeral=True)
+    await post_controls_helper(interaction.channel)
+
+    await interaction.followup.send(
+        "Control buttons posted successfully.",
+        ephemeral=True
+    )
+
+    log_message("Control buttons posted successfully.", category="post_controls")
 # Helper function to check user permissions
 def user_has_permission(member: discord.Member):
 	log_message(f"Checking permissions for user {member.display_name}", category="user_has_permission")
