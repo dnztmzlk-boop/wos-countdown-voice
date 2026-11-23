@@ -206,14 +206,17 @@ class ControlView(View):
 		await interaction.response.send_message("Stopped the current sound.", ephemeral=True)
 
 	async def play_sound_callback(self, interaction: discord.Interaction, sound: str):
-		log_message(f"play_sound_callback called for sound: {sound}", category="play_sound_callback")
-		if not user_has_permission(interaction.user):
-			await interaction.response.send_message("You don't have permission to play this sound.", ephemeral=True)
-			log_message(f"User {interaction.user.display_name} does not have permission to play {sound}.", category="play_sound_callback")
-			return
+    log_message(f"play_sound_callback called for sound: {sound}", category="play_sound_callback")
 
-		await play_sound(sound, interaction.guild)
-		await interaction.response.defer()
+    if not user_has_permission(interaction.user):
+        await interaction.response.send_message(
+            "You don't have permission to play this sound.",
+            ephemeral=True
+        )
+        return
+
+    await interaction.response.defer()
+    await play_sound(sound, interaction.guild)
 
 # Register the view with the bot
 @bot.event
