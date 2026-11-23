@@ -23,7 +23,7 @@ global_logs = {}
 log_counter = 0  # Counter to generate unique IDs for logs
 
 # Configuration values
-bot_token = config.get("token")
+bot_token = os.getenv("DISCORD_TOKEN") or config.get("token")
 allowed_roles = config.get("roles-allowed-to-control-bot", [])
 purge_channel_ids = config.get("purge-and-repost-on-channel-ids", [])
 log_messages_to_keep = config.get("log-messages-to-keep",0)
