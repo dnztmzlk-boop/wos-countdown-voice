@@ -276,26 +276,37 @@ async def post_controls_helper(channel, existing_message=None):
 
 
 # Function to play sound
+
 async def play_sound(sound: str, guild: discord.Guild):
-	log_message(f"play_sound called with sound: {sound}", category="play_sound")
-	voice_client = discord.utils.get(bot.voice_clients, guild=guild)
-	if not voice_client:
-		log_message("Bot is not connected to a voice channel.", severity="warning", category="play_sound")
-		return
+    log_message(f"play_sound called with sound: {sound}", category="play_sound")
 
-	sound_path = f'sound-clips/{sound}.mp3'
-	if not os.path.isfile(sound_path):
-		log_message(f"Sound '{sound}' not found.", severity="error", category="play_sound")
-		return
+    voice_client = discord.utils.get(bot.voice_clients, guild=guild)
 
-	if voice_client.is_playing():
-		voice_client.stop()
-		log_message("Stopped the currently playing sound.", category="play_sound")
+    if not voice_client:
+        log_message("Bot is not connected to a voice channel.", severity="warning", category="play_sound")
+        return
 
-	audio_source = discord.FFmpegPCMAudio(sound_path)
-	voice_client.play(audio_source)
-	log_message(f"Playing {sound}.mp3", category="play_sound")
+    sound_path = f'sound-clips/{sound}.mp3'
 
+    if not os.path.isfile(sound_path):
+        log_message(f"Sound '{sound}' not found.", severity="error", category="play_sound")
+        return
+
+    if voice_client.is_playing():
+        voice_client.stop()
+        log_message("Stopped the currently playing sound.", category="play_sound")
+
+    audio_source = discord.FFmpegPCMAudio(sound_path)
+
+    def after_playing(error):
+        if error:
+            log_message(f"Audio playback error: {error}", severity="error", category="play_sound")
+        else:
+            log_message(f"Audio playback finished: {sound}", category="play_sound")
+
+    voice_client.play(audio_source, after=after_playing)
+
+    log_message(f"Playing {sound}.mp3", category="play_sound")
 # Function to stop sound
 async def stop_sound(guild: discord.Guild):
 	log_message("stop_sound called", category="stop_sound")
