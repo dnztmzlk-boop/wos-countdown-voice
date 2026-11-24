@@ -308,7 +308,7 @@ async def play_sound(sound: str, guild: discord.Guild):
         log_message("Voice client is not connected.", severity="error", category="play_sound")
         return
 
-    log_message(f"Voice connection ready: {voice_client.is_ready()}", category="play_sound")
+    
 
     voice_client.play(audio_source, after=after_playing)
 
