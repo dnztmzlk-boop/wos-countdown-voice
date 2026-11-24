@@ -310,7 +310,7 @@ async def play_sound(sound: str, guild: discord.Guild):
 
     voice_client.play(audio_source, after=after_playing)
 
-udp_socket = getattr(voice_client, "socket", None)
+
 
 try:
     socket_info = (
