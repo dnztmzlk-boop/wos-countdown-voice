@@ -309,10 +309,9 @@ async def play_sound(sound: str, guild: discord.Guild):
         return
 
     
-
-    voice_client.play(audio_source, after=after_playing)
-
-    log_message(f"Playing {sound}.mp3", category="play_sound")
+voice_client.play(audio_source, after=after_playing)
+log_message(f"Voice client playing immediately after play(): {voice_client.is_playing()}", category="play_sound")
+    
 # Function to stop sound
 async def stop_sound(guild: discord.Guild):
 	log_message("stop_sound called", category="stop_sound")
