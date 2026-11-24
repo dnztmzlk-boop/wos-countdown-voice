@@ -309,7 +309,25 @@ async def play_sound(sound: str, guild: discord.Guild):
         return
 
     voice_client.play(audio_source, after=after_playing)
-    log_message(f"Voice client playing immediately after play(): {voice_client.is_playing()}", category="play_sound")
+
+udp_socket = getattr(voice_client, "socket", None)
+
+try:
+    socket_info = (
+        f"exists={udp_socket is not None}, "
+        f"open={udp_socket.fileno() >= 0 if udp_socket else False}, "
+        f"local_address={udp_socket.getsockname() if udp_socket else None}"
+    )
+except Exception as e:
+    socket_info = f"socket inspection failed: {e}"
+
+log_message(
+    f"VOICE DIAGNOSTIC: connected={voice_client.is_connected()}, "
+    f"playing={voice_client.is_playing()}, "
+    f"endpoint={getattr(voice_client, 'endpoint', None)}, "
+    f"UDP={socket_info}",
+    category="voice_diagnostic"
+)
     
 # Function to stop sound
 async def stop_sound(guild: discord.Guild):
