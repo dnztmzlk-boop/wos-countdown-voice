@@ -283,10 +283,10 @@ async def play_sound(sound: str, guild: discord.Guild):
     voice_client = discord.utils.get(bot.voice_clients, guild=guild)
 
     if not voice_client:
-        log_message("Bot is not connected to a voice channel.", severity="warning", category="play_sound")
+        log_message("Bot not connected to a voice channel.", severity="warning", category="play_sound")
         return
 
-    sound_path = f'sound-clips/{sound}.mp3'
+    sound_path = f"sound-clips/{sound}.mp3"
 
     if not os.path.isfile(sound_path):
         log_message(f"Sound '{sound}' not found.", severity="error", category="play_sound")
@@ -303,6 +303,12 @@ async def play_sound(sound: str, guild: discord.Guild):
             log_message(f"Audio playback error: {error}", severity="error", category="play_sound")
         else:
             log_message(f"Audio playback finished: {sound}", category="play_sound")
+
+    if not voice_client.is_connected():
+        log_message("Voice client is not connected.", severity="error", category="play_sound")
+        return
+
+    log_message(f"Voice connection ready: {voice_client.is_ready()}", category="play_sound")
 
     voice_client.play(audio_source, after=after_playing)
 
